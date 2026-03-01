@@ -27,13 +27,13 @@
 
 India welcomes millions of international tourists every year, yet navigating the country remains one of the most overwhelming experiences for foreign visitors. Despite holding a valid visa, tourists frequently face critical challenges:
 
-- **Lack of centralized, reliable information** — Travel information is scattered across dozens of unverified websites, outdated blogs, and unofficial apps, making it hard for tourists to plan safely and efficiently.
-- **Language and cultural barriers** — India has 22 official languages and hundreds of dialects. Foreign tourists often struggle to communicate, understand local customs, or read signage.
-- **Safety concerns** — Tourists, especially solo travellers and women, face risks ranging from scams and overcharging to genuine emergencies, with no single point of contact for help.
-- **Visa and regulatory confusion** — Tourists are often unaware of restricted areas, e-visa conditions, photography bans, and region-specific entry rules, leading to inadvertent violations.
-- **No government-integrated support** — There is no direct, real-time link between a tourist's visit and government databases, embassies, or local law enforcement, leaving tourists unsupported during crises.
+- *Lack of centralized, reliable information* — Travel information is scattered across dozens of unverified websites, outdated blogs, and unofficial apps, making it hard for tourists to plan safely and efficiently.
+- *Language and cultural barriers* — India has 22 official languages and hundreds of dialects. Foreign tourists often struggle to communicate, understand local customs, or read signage.
+- *Safety concerns* — Tourists, especially solo travellers and women, face risks ranging from scams and overcharging to genuine emergencies, with no single point of contact for help.
+- *Visa and regulatory confusion* — Tourists are often unaware of restricted areas, e-visa conditions, photography bans, and region-specific entry rules, leading to inadvertent violations.
+- *No government-integrated support* — There is no direct, real-time link between a tourist's visit and government databases, embassies, or local law enforcement, leaving tourists unsupported during crises.
 
-**Our Solution:** *IndiaGuide* bridges this gap by building a government-integrated, open-source web platform that serves as a single, trusted companion for every tourist visiting India — from landing at the airport to safely completing their journey.
+*Our Solution:* IndiaGuide bridges this gap by building a government-integrated, open-source web platform that serves as a single, trusted companion for every tourist visiting India — from landing at the airport to safely completing their journey.
 
 ---
 
@@ -159,8 +159,8 @@ IndiaGuide is built as a **fully open-source web application**.
 | Name | Role | GitHub |
 |------|------|--------|
 | Nikhil Karur | Team Lead / Full Stack | [@Nikhilkarur](https://github.com/Nikhilkarur) |
-| Teammate 2 | Problem Statement / Research | — |
-| Teammate 3 | Features & Backend | — |
+| RAGHU PRASAD MANOJ KASYAP | Problem Statement / Research | — |
+| ABHIRAM | Features & Backend | — |
 
 > Replace teammate names and GitHub handles above with actual details.
 
