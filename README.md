@@ -2,6 +2,8 @@
 
 > Submitted for **FOSS Hack 2026** | Open Source Hackathon
 
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+
 ---
 
 ## 📌 Table of Contents
@@ -139,6 +141,13 @@ IndiaGuide is built as a **fully open-source web application**.
 | Nikhil Karur | Team Lead / Database & Backend | [@Nikhilkarur](https://github.com/Nikhilkarur) |
 | Raghu Prasad Manoj Kasyap | Backend Development | [@manojkasyap29](https://github.com/manojkasyap29) |
 | Abhiram | Frontend Development | [@abhirambuilds](https://github.com/abhirambuilds) |
+
+---
+
+## 📅 Daily Hackathon Progress
+
+### 🛠️ Nikhil's Progress (Team Lead / DB & Backend)
+- **Day 1**: Initialized the PostgreSQL database schemas for destinations and users. Set up the core Node.js + Express.js scaffolding and began connecting to the Ministry of Tourism open data APIs.
 
 ---
 
