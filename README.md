@@ -103,6 +103,36 @@ The frontend app will communicate with the backend via:
 *   `GET /api/user/{user_id}`: Retrieves the user's dietary preferences and specific allergy restrictions.
 
 ---
+
+### 4. API Response Format
+
+The backend returns a structured JSON response after scanning an ingredient label.
+
+Example response from `POST /api/scan`:
+
+```json
+{
+  "ingredients_detected": [
+    "Sugar",
+    "Palm Oil",
+    "Maltodextrin",
+    "Monosodium Glutamate"
+  ],
+  "allergy_alerts": [
+    "Contains dairy",
+    "Contains artificial additives"
+  ],
+  "health_score": -0.42,
+  "verdict": "Unhealthy",
+  "recommended_alternatives": [
+    "Roasted Chickpea Snack",
+    "Baked Lentil Chips"
+  ]
+}
+```
+
+
+---
 ## 🚀 Getting Started (Local Development)
 
 *(Note: These are placeholder instructions while the project is in active development)*
