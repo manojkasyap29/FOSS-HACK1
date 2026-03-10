@@ -89,3 +89,64 @@ async def scan_product(
         "verdict": verdict,
         "nutrition_facts": nutrition,
     }
+
+
+@app.get("/api/scan/barcode/{barcode}")
+def scan_barcode(
+    barcode: str,
+    user_id: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
+    from external_api import fetch_product_by_barcode
+    from cache import get_cached_ingredient_data
+    from nlp_parser import clean_ingredient_text
+    
+    product_data = fetch_product_by_barcode(barcode)
+    if not product_data:
+        return {"error": "Product not found"}
+        
+    ingredients_text = product_data.get("ingredients_text", "")
+    
+    # Process ingredients using existing NLP parser
+    # We prefix with 'Ingredients: ' so the parser's regex match works
+    ingredients = clean_ingredient_text(f"Ingredients: {ingredients_text}")
+    
+    allergy_alerts = []
+    total_score = 0.0
+    matched_count = 0
+
+    for ingredient in ingredients:
+        cached_data = get_cached_ingredient_data(db, ingredient)
+        
+        if cached_data:
+            total_score += cached_data["health_score"]
+            matched_count += 1
+            if cached_data["flags"]:
+                allergy_alerts.append(f"{cached_data['name']}: {cached_data['flags']}")
+
+    health_score = round(total_score / matched_count, 2) if matched_count > 0 else 0.0
+
+    if health_score >= 0.5:
+        verdict = "Healthy"
+    elif health_score >= 0.0:
+        verdict = "Moderate"
+    else:
+        verdict = "Unhealthy"
+
+    if user_id is not None:
+        scan_entry = models.ScanHistory(
+            user_id=user_id,
+            product_name=product_data.get("product_name"),
+            health_score=health_score,
+            verdict=verdict,
+        )
+        db.add(scan_entry)
+        db.commit()
+
+    return {
+        "product_info": product_data,
+        "ingredients_detected": ingredients,
+        "allergy_alerts": allergy_alerts,
+        "health_score": health_score,
+        "verdict": verdict,
+    }
