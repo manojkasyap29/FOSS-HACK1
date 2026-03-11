@@ -9,6 +9,10 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
     dietary_preference = Column(String, nullable=True)
+    target_calories = Column(Float, nullable=True)
+    target_protein = Column(Float, nullable=True)
+    target_fat = Column(Float, nullable=True)
+    target_carbs = Column(Float, nullable=True)
 
 class IngredientData(Base):
     __tablename__ = "ingredients"
