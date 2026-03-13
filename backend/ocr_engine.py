@@ -5,7 +5,6 @@ import pytesseract
 
 logger = logging.getLogger(__name__)
 
-# Tesseract config: LSTM engine, auto page segmentation
 _TESS_CONFIG = "--psm 3 --oem 1"
 
 
