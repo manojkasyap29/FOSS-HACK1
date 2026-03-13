@@ -179,3 +179,4 @@ def get_user_progress(
             "percentage_completed": calc_percentage(total_carbs, db_user.target_carbs)
         }
     }
+#-----
