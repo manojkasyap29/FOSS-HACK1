@@ -16,6 +16,7 @@ import analytics_routes
 import suggestion_routes
 import notification_routes
 import admin_routes
+import health_routes
 
 # Create tables if they don't exist yet
 models.Base.metadata.create_all(bind=engine)
@@ -42,6 +43,7 @@ app.include_router(analytics_routes.router, prefix="/api")
 app.include_router(suggestion_routes.router, prefix="/api")
 app.include_router(notification_routes.router, prefix="/api")
 app.include_router(admin_routes.router)
+app.include_router(health_routes.router, prefix="/api")
 
 
 @app.get("/")
