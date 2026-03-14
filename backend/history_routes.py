@@ -15,6 +15,8 @@ router = APIRouter()
 @router.get("/history/{user_id}")
 def get_scan_history(
     user_id: int, 
+    page: int = 1,
+    page_size: int = 20,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
@@ -25,23 +27,32 @@ def get_scan_history(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    total_count = db.query(models.ScanHistory).filter(models.ScanHistory.user_id == user_id).count()
+
     history = (
         db.query(models.ScanHistory)
         .filter(models.ScanHistory.user_id == user_id)
         .order_by(models.ScanHistory.created_at.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
         .all()
     )
 
-    return [
-        {
-            "id": entry.id,
-            "product_name": entry.product_name,
-            "health_score": entry.health_score,
-            "verdict": entry.verdict,
-            "created_at": entry.created_at,
-        }
-        for entry in history
-    ]
+    return {
+        "total_count": total_count,
+        "page": page,
+        "page_size": page_size,
+        "items": [
+            {
+                "id": entry.id,
+                "product_name": entry.product_name,
+                "health_score": entry.health_score,
+                "verdict": entry.verdict,
+                "created_at": entry.created_at,
+            }
+            for entry in history
+        ]
+    }
 
 
 @router.get("/history/{user_id}/export")

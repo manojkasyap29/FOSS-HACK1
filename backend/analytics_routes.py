@@ -9,7 +9,12 @@ from database import get_db
 router = APIRouter()
 
 @router.get("/analytics/{user_id}")
-def get_user_analytics(user_id: int, db: Session = Depends(get_db)):
+def get_user_analytics(
+    user_id: int, 
+    page: int = 1,
+    page_size: int = 5,
+    db: Session = Depends(get_db)
+):
     # Verify user exists
     user = db.query(models.User).filter(models.User.id == user_id).first()
     if not user:
@@ -38,13 +43,23 @@ def get_user_analytics(user_id: int, db: Session = Depends(get_db)):
     
     for verdict, count in verdict_counts_query:
         # Map to known keys to ensure consistency
-        if verdict in verdict_summary:
-            verdict_summary[verdict] = count
-        else:
-            verdict_summary[verdict] = count
+        v_str = str(verdict)
+        verdict_summary[v_str] = count
 
-    # 3. Top 3 most frequently encountered bad ingredients based on scans
+    # 3. Top frequently encountered bad ingredients based on scans
     # Bad ingredients = health_score < 0
+    
+    # Total count for pagination
+    total_bad_count = (
+        db.query(models.IngredientData.name)
+        .join(models.scan_ingredients_association, models.scan_ingredients_association.c.ingredient_id == models.IngredientData.id)
+        .join(models.ScanHistory, models.ScanHistory.id == models.scan_ingredients_association.c.scan_id)
+        .filter(models.ScanHistory.user_id == user_id)
+        .filter(models.IngredientData.health_score < 0.0)
+        .distinct()
+        .count()
+    )
+
     bad_ingredients_query = (
         db.query(
             models.IngredientData.name,
@@ -56,7 +71,8 @@ def get_user_analytics(user_id: int, db: Session = Depends(get_db)):
         .filter(models.IngredientData.health_score < 0.0)
         .group_by(models.IngredientData.name)
         .order_by(desc("freq"))
-        .limit(3)
+        .offset((page - 1) * page_size)
+        .limit(page_size)
         .all()
     )
 
@@ -68,5 +84,10 @@ def get_user_analytics(user_id: int, db: Session = Depends(get_db)):
     return {
         "average_health_score": round(avg_score, 2) if avg_score is not None else 0.0,
         "verdict_counts": verdict_summary,
-        "top_bad_ingredients": top_bad_ingredients
+        "top_bad_ingredients": {
+            "total_count": total_bad_count,
+            "page": page,
+            "page_size": page_size,
+            "items": top_bad_ingredients
+        }
     }
