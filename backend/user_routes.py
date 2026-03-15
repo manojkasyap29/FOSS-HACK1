@@ -36,6 +36,7 @@ class UserResponse(BaseModel):
     id: int
     username: str
     dietary_preference: Optional[str] = None
+    current_streak: int
 
     model_config = ConfigDict(from_attributes=True)
 

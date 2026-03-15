@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Table, Boolean
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Table, Boolean, Date
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -13,6 +13,8 @@ class User(Base):
     target_protein = Column(Float, nullable=True)
     target_fat = Column(Float, nullable=True)
     target_carbs = Column(Float, nullable=True)
+    current_streak = Column(Integer, default=0)
+    last_scan_date = Column(Date, nullable=True)
 
 class IngredientData(Base):
     __tablename__ = "ingredients"

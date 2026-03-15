@@ -3,6 +3,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi import FastAPI, Depends, File, UploadFile, Form, Request, BackgroundTasks
+from datetime import datetime, timedelta
 from typing import Optional
 from sqlalchemy.orm import Session
 
@@ -81,6 +82,24 @@ def _save_scan_to_db(
         ingredients=scanned_ing_models,
     )
     db.add(scan_entry)
+    
+    # Update user streak
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user:
+        today = datetime.utcnow().date()
+        yesterday = today - timedelta(days=1)
+        
+        if user.last_scan_date == yesterday:
+            user.current_streak += 1
+            user.last_scan_date = today
+        elif user.last_scan_date == today:
+            # Already scanned today, do nothing to streak
+            pass
+        else:
+            # Date is older than yesterday or first scan ever
+            user.current_streak = 1
+            user.last_scan_date = today
+            
     db.commit()
 
     if verdict == "Unhealthy":
