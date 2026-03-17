@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
+from sqlalchemy import text
 from typing import List
 from datetime import datetime, timedelta
 
@@ -8,6 +9,67 @@ import models
 from database import get_db
 
 router = APIRouter()
+
+
+@router.get("/analytics/shipments/overview")
+def get_shipment_analytics_overview(db: Session = Depends(get_db)):
+    try:
+        totals_row = db.execute(
+            text(
+                """
+                SELECT
+                    COUNT(*) AS total_shipments,
+                    SUM(CASE WHEN status = 'Delivered' THEN 1 ELSE 0 END) AS delivered,
+                    SUM(CASE WHEN status = 'In Transit' THEN 1 ELSE 0 END) AS in_transit,
+                    SUM(CASE WHEN status = 'Created' THEN 1 ELSE 0 END) AS created
+                FROM shipments
+                """
+            )
+        ).mappings().first()
+
+        by_exporter_rows = db.execute(
+            text(
+                """
+                SELECT
+                    COALESCE(u.username, 'Unknown Exporter') AS exporter_name,
+                    COUNT(*) AS shipments_count
+                FROM shipments s
+                LEFT JOIN users u ON u.id = s.exporter_id
+                GROUP BY exporter_name
+                ORDER BY shipments_count DESC
+                LIMIT 10
+                """
+            )
+        ).mappings().all()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to compute shipment analytics. Ensure shipments/users tables exist. Error: {str(exc)}",
+        )
+
+    total_shipments = int((totals_row or {}).get("total_shipments") or 0)
+    delivered = int((totals_row or {}).get("delivered") or 0)
+    in_transit = int((totals_row or {}).get("in_transit") or 0)
+    created = int((totals_row or {}).get("created") or 0)
+
+    delivery_rate = round((delivered / total_shipments) * 100, 2) if total_shipments else 0.0
+
+    return {
+        "totals": {
+            "total_shipments": total_shipments,
+            "delivered": delivered,
+            "in_transit": in_transit,
+            "created": created,
+            "delivery_rate_percent": delivery_rate,
+        },
+        "top_exporters": [
+            {
+                "exporter_name": row.get("exporter_name"),
+                "shipments_count": int(row.get("shipments_count") or 0),
+            }
+            for row in by_exporter_rows
+        ],
+    }
 
 
 @router.get("/analytics/{user_id}/weekly")

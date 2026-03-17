@@ -21,6 +21,7 @@ import health_routes
 import leaderboard_routes
 import badges_routes
 import water_routes
+import shipment_routes
 
 # Create tables if they don't exist yet
 models.Base.metadata.create_all(bind=engine)
@@ -51,6 +52,7 @@ app.include_router(health_routes.router, prefix="/api")
 app.include_router(leaderboard_routes.router, prefix="/api")
 app.include_router(badges_routes.router, prefix="/api")
 app.include_router(water_routes.router, prefix="/api")
+app.include_router(shipment_routes.router)
 
 
 @app.get("/")
