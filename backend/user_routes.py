@@ -28,6 +28,7 @@ class UserGoalsUpdate(BaseModel):
 class UserProfileUpdate(BaseModel):
     display_name: Optional[str] = None
     avatar_url: Optional[str] = None
+    dietary_preference: Optional[str] = None
 
 class UserGoalsResponse(BaseModel):
     target_calories: Optional[float] = None
@@ -145,8 +146,12 @@ def update_user_profile(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    db_user.display_name = profile.display_name
-    db_user.avatar_url = profile.avatar_url
+    if profile.display_name is not None:
+        db_user.display_name = profile.display_name
+    if profile.avatar_url is not None:
+        db_user.avatar_url = profile.avatar_url
+    if profile.dietary_preference is not None:
+        db_user.dietary_preference = profile.dietary_preference
 
     db.commit()
     db.refresh(db_user)
